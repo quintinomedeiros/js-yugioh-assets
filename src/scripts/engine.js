@@ -120,18 +120,20 @@ async function setCardsField(cardId) {
 
 // Função para verificar o ganhador do duelo
 async function checkDuelResults(playerCardId, computerCardId) {
-    let duelResults = "Empate";
+    let duelResults = "DRAW";
     let playerCard = cardData[playerCardId];
 
     if (playerCard.WinOf.includes(computerCardId)) {
-        duelResults = "Ganhou";
+        duelResults = "WIN";
         state.score.playerScore++;
     }
 
     if (playerCard.LoseOf.includes(computerCardId)) {
-        duelResults = "Perdeu";
+        duelResults = "LOSE";
         state.score.computerScore++;
     }
+
+    await playAudio(duelResults); // Tocar audio
 
     return duelResults;
 }
@@ -143,7 +145,7 @@ async function updateScore() {
 
 // Criar o botão com resultado e reinício
 async function drawButton(text) {
-    state.actions.button.innerText = text;
+    state.actions.button.innerText = text.toUpperCase();
     state.actions.button.style.display = "block";
 }
 
@@ -163,6 +165,30 @@ async function drawCards(cardNumbers, fieldSide) {
         
         document.getElementById(fieldSide).appendChild(cardImage);
     }
+}
+
+// Função para criar um novo duelo
+async function resetDuel(){
+    // Limpar carta do menu lateral
+    state.cardSprites.avatar.src = "";
+    // Esconder o botão com resultado do duelo
+    state.actions.button.style.display = "none";
+    // Limpar as caixas do duelo
+    state.fieldCards.player.style.display = "none";
+    state.fieldCards.computer.style.display = "none";
+
+    // Resetar o duelo - distribuir as cartas novamente
+    init();
+
+}
+
+// Função para tocar aúdio
+async function playAudio(status) {
+    const audio = new Audio(`./src/assets/audios/${status}.wav`);
+
+    try {
+        audio.play();
+    } catch  {};
 }
 
 // Função principal que chamará as outras funções
