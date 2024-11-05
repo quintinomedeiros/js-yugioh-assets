@@ -107,6 +107,9 @@ async function setCardsField(cardId) {
     state.fieldCards.player.style.display = "block";
     state.fieldCards.computer.style.display = "block";
 
+    // Resetar os detalhes das cartas do lado
+    await hiddenCardDetails();
+
     // Incluir imagem da carta no campo de disputa de cada jogador
     state.fieldCards.player.src = cardData[cardId].img;
     state.fieldCards.computer.src = cardData[computerCardId].img;
@@ -116,6 +119,13 @@ async function setCardsField(cardId) {
 
     await updateScore();
     await drawButton(duelResults);
+}
+
+// Resetar os detalhes das cartas do lado
+async function hiddenCardDetails() {
+    state.cardSprites.avatar.src = "";
+    state.cardSprites.name.innerText = "";
+    state.cardSprites.type.innerText = "";
 }
 
 // Função para verificar o ganhador do duelo
@@ -193,6 +203,10 @@ async function playAudio(status) {
 
 // Função principal que chamará as outras funções
 function init() {
+    // Esconder as bordas das imagens
+    state.fieldCards.player.style.display = "none";
+    state.fieldCards.computer.style.display = "none";
+
     // Lançar cartas
     drawCards(5, state.playerSides.player1);
     drawCards(5, state.playerSides.computer);
